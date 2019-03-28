@@ -9,9 +9,8 @@ import static java.math.BigDecimal.ROUND_HALF_UP;
 /**
  * 元转分默认无小数
  * 分转元默认保留两位小数
- *
+ * <p>
  * 舍入默认采用四舍五入
- *
  */
 public class Money {
 
@@ -46,12 +45,21 @@ public class Money {
         return this.money.longValue();
     }
 
-    public String toScaleString(int scale) {
-
-        return this.getMoney().setScale(scale,ROUND_HALF_UP).toPlainString();
+    public long toFen() {
+        return convertUnit(this, MoneyUnit.FEN).toLong();
 
     }
 
+    public float toYuan() {
+
+        return convertUnit(this, MoneyUnit.YUAN).toFloat();
+    }
+
+    public String toScaleString(int scale) {
+
+        return this.getMoney().setScale(scale, ROUND_HALF_UP).toPlainString();
+
+    }
 
     public static Money convertUnit(Money money, MoneyUnit moneyUnit) {
 
@@ -64,11 +72,11 @@ public class Money {
 
         if (moneyUnit.getCode() == MoneyUnit.YUAN.getCode() && money.getMoneyUnit().getCode() == MoneyUnit.FEN.getCode()) {
             BigDecimal divisor = new BigDecimal(100);
-            return new Money(money.getMoney().divide(divisor).setScale(2,ROUND_HALF_UP).toPlainString(), moneyUnit);
+            return new Money(money.getMoney().divide(divisor).setScale(2, ROUND_HALF_UP).toPlainString(), moneyUnit);
 
         } else if (moneyUnit.getCode() == MoneyUnit.FEN.getCode() && money.getMoneyUnit().getCode() == MoneyUnit.YUAN.getCode()) {
             BigDecimal multiplicand = new BigDecimal(100);
-            return new Money(money.getMoney().multiply(multiplicand).setScale(0,ROUND_HALF_UP).toPlainString(), moneyUnit);
+            return new Money(money.getMoney().multiply(multiplicand).setScale(0, ROUND_HALF_UP).toPlainString(), moneyUnit);
         } else {
             return null;
         }
